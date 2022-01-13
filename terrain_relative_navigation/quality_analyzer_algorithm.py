@@ -10,15 +10,6 @@
         copyright            : (C) 2021 by NASA JPL
         email                : russells@jpl.nasa.gov
  ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 """
 
 __author__ = "NASA JPL"
@@ -244,24 +235,6 @@ class QualityAnalyzerAlgorithm(QgsProcessingAlgorithm):
         for i in range(bands):
             out_ds.GetRasterBand(i + 1).WriteArray(array[i])
 
-        # # if bands == 3:
-        # #     raise ValueError(array.shape, np.nanmin(array[0]), np.nanmax(array[0]), np.nanmin(array[1]), np.nanmax(array[1]), np.nanmin(array[2]), np.nanmax(array[2]))
-
-        # template_ds = gdal.OpenShared(template_raster_filename)
-
-        # # create a temporary data store with a driver that supports adding bands
-        # temp_ds = gdal.GetDriverByName("MEM").CreateCopy("", template_ds, 0)
-        # for _ in range(bands - template_ds.RasterCount):
-        #     temp_ds.AddBand()
-        
-        # for i in range(bands):
-
-        #     temp_ds.GetRasterBand(i + 1).WriteArray(array[i])
-
-        # # convert to desired driver
-        # gdal.GetDriverByName("GTiff").CreateCopy(filename, temp_ds, 0)
-
-
     def processAlgorithm(self, parameters, context, feedback):
         """
         Here is where the processing itself takes place.
@@ -286,9 +259,7 @@ class QualityAnalyzerAlgorithm(QgsProcessingAlgorithm):
         )["OUTPUT"]
 
         # print(viewpoints_layer_name)
-        # viewpoints_layer = self.parameterAsSource(viewpoints_result, "OUTPUT", context)
         viewpoints_layer = context.takeResultLayer(viewpoints_layer_path)
-
 
         # Run viewshed analysis
         viewsheds_dir = self.parameterAsFileOutput(parameters, self.VIEWSHEDS_DIR, context)
@@ -341,10 +312,8 @@ class QualityAnalyzerAlgorithm(QgsProcessingAlgorithm):
 
         metric_id = self.parameterAsEnum(parameters, self.QUALITY_METRIC, context)
         quality_array = quality_analysis.compute_quality(fim_arrays, pointing, metric=metric_id)
-        # raise ValueError(quality_array)
 
         # write resulting arrays to layers
-
         quality_raster_path = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
         self.write_raster_data_to_layer(quality_raster_path, np.array([quality_array]), viewsheds_paths[0])
 

@@ -13,15 +13,6 @@
         copyright            : (C) 2021 by NASA JPL
         email                : russells@jpl.nasa.gov
  ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 """
 
 __author__ = "NASA JPL"
@@ -164,7 +155,7 @@ class PathAnimationAlgorithm(QgsProcessingAlgorithm):
                 self.ROBOT_SPEED,
                 self.tr("Robot speed, m/s"),
                 QgsProcessingParameterNumber.Double,
-                defaultValue=100.0     # TESTING
+                defaultValue=1.0
             )
         )
 
@@ -270,7 +261,6 @@ class PathAnimationAlgorithm(QgsProcessingAlgorithm):
             feedback=feedback
         )["OUTPUT"]
         waypoints_layer = context.takeResultLayer(waypoints_layer_name)
-        # waypoints = list(waypoints_layer.getFeatures())
 
 
         # assosciate timestamps with waypoints and add to output sink
@@ -310,7 +300,6 @@ class PathAnimationAlgorithm(QgsProcessingAlgorithm):
                     seg.setGeometry(QgsGeometry.fromPolylineXY([line_start, line_end]))
                     seg.setFields(rays_fields)
                     seg.setAttribute("timestamp", timestamp)
-                    # TODO: add info-gain attribute here
                     rays_sink.addFeature(seg)
             
             total_fim /= pointing ** 2
@@ -326,12 +315,6 @@ class PathAnimationAlgorithm(QgsProcessingAlgorithm):
             except np.linalg.LinAlgError:
                 feedback.pushDebugInfo(f"singular FIM encountered at {waypoint_point}")
                 continue
-            
-            # # TESTING
-            # cov_mat = np.array([
-            #     [4, -2],
-            #     [-2, 4]
-            # ])
         
             ellipse = QgsFeature()
 

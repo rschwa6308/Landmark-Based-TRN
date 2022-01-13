@@ -31,8 +31,6 @@ def compute_fims(viewpoints_layer, viewshed_paths):
             pixelSizeX = gt[1]
             pixelSizeY =-gt[5]
         array = ds.GetRasterBand(1).ReadAsArray().astype(np.uint8)
-        # array = convertRasterToNumpyArray(QgsRasterLayer(filename, "temp", "qgis"))
-        # raise ValueError(np.amin(array), np.amax(array), np.isnan(array).all(), '%.1f%% masked' % (np.isnan(array).sum() * 100.0 / array.size))
         viewshed_arrays.append(array)
     
     viewpoint_pixel_locs = []
@@ -43,7 +41,6 @@ def compute_fims(viewpoints_layer, viewshed_paths):
         px, py = int(px + 0.5), int(py + 0.5)
         viewpoint_pixel_locs.append((px, py))
 
-    # raise ValueError(viewpoint_pixel_locs)    # TESTING
 
     h, w = viewshed_arrays[0].shape
     fims = [np.zeros((h, w, 3), dtype=np.float32) for _ in viewshed_arrays]
@@ -59,6 +56,7 @@ def compute_fims(viewpoints_layer, viewshed_paths):
         # Find pixel distances from that peak
         xarange = np.arange(eastsize) - viewpoint[0]
         yarange = np.arange(northsize) - viewpoint[1]
+
         # create matrices of distance components, dx, dy, for each pixel
         xmat = np.reshape(xarange,(eastsize,1))
         xmat = np.repeat(xmat,(northsize),axis=1).transpose()
@@ -66,7 +64,6 @@ def compute_fims(viewpoints_layer, viewshed_paths):
         minval = np.min(xmat)
         maxval = np.max(xmat)
         print("X min:{}, X max:{}".format(minval,maxval))
-        # raise ValueError("X min:{}, X max:{}".format(minval,maxval))
 
         ymat = np.reshape(yarange,(northsize,1))
         ymat = np.repeat(ymat.transpose(),(eastsize),axis=0).transpose()
@@ -82,7 +79,6 @@ def compute_fims(viewpoints_layer, viewshed_paths):
         minval = np.min(r1mat)
         maxval = np.max(r1mat)
         print("R min:{}, R max:{}".format(minval,maxval))
-        # raise ValueError("R min:{}, R max:{}".format(minval,maxval))
 
         cosmat = np.divide(xmat,r1mat)
         sinmat = np.divide(ymat,r1mat)
@@ -92,7 +88,6 @@ def compute_fims(viewpoints_layer, viewshed_paths):
         fims[i][:,:,0] += viewshed * np.divide(sin2mat,r2mat)
         fims[i][:,:,1] -= viewshed * np.divide( np.multiply(sinmat,cosmat) , r2mat)
         fims[i][:,:,2] += viewshed * np.divide(cos2mat,r2mat)
-        # print("Completed: {}".format(fname))
 
         x2mat=None
         y2mat=None
@@ -103,8 +98,6 @@ def compute_fims(viewpoints_layer, viewshed_paths):
         cos2mat=None
         sin2mat=None
 
-        # raise ValueError(np.isnan(fim).all())
-
     return fims
     
 
@@ -113,12 +106,8 @@ def compute_quality(fims, pointing, metric=0, nodata_value=1_000_000):
     given a list of viewpoints and viewsheds, compute the quality metrix array of the same shape;
     0 = GDOP, 1 = Worst-Case
     """
-    # fim = compute_fim(viewpoints_layer, viewshed_paths)
-
     fim = np.sum(np.array(fims), axis=0)    # add up components
     fim /= math.pow(pointing, 2)
-
-    # raise ValueError(fim)   # TESTING
 
     # Compute largest eigenvalue of covariance matrix
     determ = fim[:,:,0]*fim[:,:,2] - fim[:,:,1]*fim[:,:,1]
@@ -148,7 +137,4 @@ def compute_quality(fims, pointing, metric=0, nodata_value=1_000_000):
     quality[fim_zeros] = nodata_value
     quality[np.isnan(quality)] = nodata_value
 
-    # raise ValueError(gdop, np.isnan(gdop).all(), np.isnan(max_eigen).all(), np.isnan(covs).all(), np.isnan(determ).all(), np.isnan(fim).all())
     return quality
-
-    # return np.zeros(fim.shape[:2])
