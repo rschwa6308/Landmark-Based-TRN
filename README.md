@@ -30,17 +30,16 @@ The following processing algorithms (available from the QGIS processing toolbox 
  - `path_animation_algorithm`: given a path through the scene, the set of landmarks, their corresponding FIM's (returned as part of `quality_analyzer_algorithm`), and various parameters pertaining to the rover, compute the covariance matrix at every point in the scene, returning a layer with waypoints along the path, a layer with observation rays, and a layer with the covariance ellipses (all timestamped)
 
 
-### Landmark Detection:
-![Peak Extraction Flowchart](https://github.jpl.nasa.gov/ANVELS/intern/blob/master/misc/peak_extraction_flowchart.png)
+### Landmark Detection Process:
+![Peak Extraction Flowchart](./figures/peak_extraction_flowchart.png)
 
 
 ### Terrain Landmark Example:
-![Terrain Landmark Example](https://github.jpl.nasa.gov/ANVELS/intern/blob/master/misc/terrain_landmark_example.png)
+![Terrain Landmark Example](./figures/terrain_landmark_example.png)
 
 
-### Example GDOP Maps:
-![Example GDOP Map of Catalina Island](https://github.jpl.nasa.gov/ANVELS/intern/blob/master/misc/GDOP_map.png)
-![Example GDOP Map of Jezero Crater](https://github.jpl.nasa.gov/ANVELS/intern/blob/master/misc/jez_crater_gdop_map.png)
+### GDOP Map Example:
+![Example GDOP Map of Jezero Crater](./figures/jez_crater_gdop_map.png)
 
 
 ## Installation
